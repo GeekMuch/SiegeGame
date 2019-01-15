@@ -15,13 +15,11 @@ getGame Score0 = defaultGame
 getGame Score1 = case defaultGame of SiegeGame g _ -> SiegeGame g (score1 g)
 
 
--- Task 1.1)
 placeDefenders :: [V] -> Map V Player -> Map V Player
 placeDefenders [] s = s
 placeDefenders vs s = M.insert (head vs) False 
   (placeDefenders (tail vs) s)
 
--- Task 1.2)
 simpleMove     :: V -> V -> Map V Player -> Map V Player
 simpleMove v v' s = if (fromJust $ M.lookup v s) == False 
   then M.insert v' (fromJust $ M.lookup v s)
@@ -31,7 +29,6 @@ simpleMove v v' s = if (fromJust $ M.lookup v s) == False
     (M.delete v s)   
     else s
 
--- Task 1.3)
 
 captureMove   :: V -> [V] -> Map V Player -> Map V Player
 captureMove v [] s = s
@@ -51,7 +48,6 @@ captureMove v (x:xs) s =
 hapsMove :: V -> V -> V
 hapsMove (x,y) (x',y') =  (2 * x' - x, 2 * y' - y)
 
--- Task 1.4)
 moveImpl :: SiegeMove -> Map V Player -> Map V Player
 moveImpl (PlaceDefenders vs) s = placeDefenders vs s
 moveImpl (SimpleMove v v') s = simpleMove v v' s
@@ -59,7 +55,6 @@ moveImpl (CaptureMove v v') s = captureMove v v' s
 
 
 
--- Task 1.5)
 
 startStateImpl :: SiegeGame -> Map V Player
 startStateImpl (SiegeGame g _) =  unity g (M.fromList[])
@@ -74,7 +69,6 @@ unity v q =
        Just player -> unity ( M.fromList( tail( M.toList(v)))) ( M.insert ( fst( M.elemAt 0 v)) player q)
 
 
--- Task 1.6)
 
 placeDefenderMoves :: SiegeGame -> [SiegeMove]
 placeDefenderMoves (SiegeGame g _) = pairs(goalPosts g [])
@@ -93,8 +87,6 @@ goalPosts v q =
        Just player -> goalPosts (M.fromList(tail(M.toList((v))))) q 
 
 
--- Task 1.7)
-
 simpleMoves :: SiegeGame -> Player -> Map V Player -> [SiegeMove]
 simpleMoves (SiegeGame g _) p s = legalMoves p g s (hostedVertice p s)  
 
@@ -112,8 +104,6 @@ legalMoves p g s vs = case (p) of
     True -> [ SimpleMove v (getNeighbor x)
             | v <- vs, x <- neighbors (fromJust (M.lookup v g)), M.notMember (getNeighbor x) s, isAttackerAllowed x]
 
-
--- Task 1.8)
 
 defenderCaptureMoves :: SiegeGame -> Map V Player -> [SiegeMove]
 defenderCaptureMoves (SiegeGame g _) s = [ CaptureMove v l
@@ -136,8 +126,6 @@ defenderCaptureMoves (SiegeGame g _) s = [ CaptureMove v l
     validFood :: V -> V -> Map V Player -> Bool
     validFood v v' s' = M.notMember (hapsMove v v') s' && M.member v' s' && s' M.! v' && inV (hapsMove v v') 
 
-
--- Task 1.9)
 
 showGameImpl :: SiegeGame -> Map V Player -> String
 showGameImpl (SiegeGame g _) m = undefined
